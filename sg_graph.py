@@ -10,9 +10,9 @@ def security_group_graph(security_group_json, direction='inbound', ip_version='v
     TODO: method of showing individual port rules.
     :param security_group_json: list of json objects from describe_security_groups
     :param direction: graph inbound vs outbound rules
-    :param ip_version: which ip version to show rules for
-    :param show_ports: show individual ports as separate nodes in grpah
-    :return: dictionary representing graph of security group rules
+    :param ip_version: which ip version to show rules for  [Not implemented yet]
+    :param show_ports: show individual ports as separate nodes in grpah [Not implemented yet]
+    :return: adjacency list of GroupId to Security_Group_Rule mappings
     """
     graph = {}
     security_groups = {x['GroupId']: x['GroupName'] for x in security_group_json}
