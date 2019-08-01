@@ -53,12 +53,14 @@ printable_graph = convert_to_printable(graph)
 nodes = []
 for group in printable_graph.keys():
     nodes.append(group)
+print(f'{len(nodes)} active security groups found.')
 
 edges = []
 for node , links in printable_graph.items():
     node_edges = [(node, link) for link in links]
     edges += node_edges
 edges = set(edges)
+print(f'{len(edges)} edges found.')
 
 pydot_nodes = [pydot.Node(x) for x in nodes]
 pydot_edges = [pydot.Edge(x[0],x[1], dir='back') for x in edges]
@@ -71,5 +73,6 @@ for e in pydot_edges:
     G.add_edge(e)
 
 G.write_png('graph.png')
+print('graph saved to graph.png')
 
 

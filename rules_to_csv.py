@@ -46,7 +46,9 @@ for sg, rules in graph.items():
 records_dict = dict(zip(range(len(rule_records)), rule_records))
 
 df = pd.DataFrame.from_dict(records_dict, orient='index', columns=['GroupId','GroupName','Source','Description','Port','Protocol'])
+print(f'{len(df)} security group rules found')
 df.to_csv('inbound_rules.csv')
+print('saving rules to inbound_rules.csv')
 
 
 #### Create table of security groups + # of interfaces attached to each
@@ -69,6 +71,7 @@ for group_id, group_data in security_groups.items():
                    ])
 
 records_dict = dict(zip(range(len(sg_records)), sg_records))
+
 df = pd.DataFrame.from_dict(records_dict, orient='index', columns=['GroupId',
                                                                    'GroupName',
                                                                    'Description',
@@ -77,4 +80,6 @@ df = pd.DataFrame.from_dict(records_dict, orient='index', columns=['GroupId',
                                                                    'owner',
                                                                    'team',
                                                                    'role'])
-df.to_csv('active_security_groups.csv')
+print(f'{len(df)} security groups found')
+df.to_csv('security_groups.csv')
+print('saving security group data to security_groups.csv')
