@@ -48,7 +48,7 @@ def main():
     rule_records = []
     for sg, rules in graph.items():
         for rule in rules:
-            rule_records.append([sg, security_groups[sg], rule.source, rule.description, rule.port, rule.protocol])
+            rule_records.append([sg, security_groups[sg]['GroupName'], rule.source, rule.description, rule.port, rule.protocol])
     records_dict = dict(zip(range(len(rule_records)), rule_records))
 
     df = pd.DataFrame.from_dict(records_dict, orient='index',
