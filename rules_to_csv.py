@@ -2,13 +2,14 @@ import boto3
 import pandas as pd
 import argparse
 
-from sg_graph import security_group_graph
+from sg_graphing.sg_graph import security_group_graph
 
 
 def parse_args():
     # TODO: Implement argument parsing for output naming
     parser = argparse.ArgumentParser(description='Script for printing AWS security group rules to csv')
     parser.add_argument('-p', '--profile_name', type=str, help='AWS profile to use.')
+    parser.add_argument('-v', '--vpc_id', type=str, help='filter by vpc_id', default=None)
     return parser.parse_args()
 
 def get_tag_value(resource_json, key):
@@ -25,14 +26,21 @@ def get_tag_value(resource_json, key):
 def main():
     args = parse_args()
     PROFILE_NAME = args.profile_name
+    VPC_ID = args.vpc_id
 
     # set up AWS session + EC2 client
     session = boto3.session.Session(profile_name=PROFILE_NAME)
     ec2_client = session.client('ec2')
     # ec2 = session.resource('ec2')
 
+    vpc_filter = {'Name': 'vpc-id', 'Values': [VPC_ID]}
+
     # create security group graph
-    security_groups_json = ec2_client.describe_security_groups()
+    filters = []
+    if VPC_ID:
+        filters.append(vpc_filter)
+
+    security_groups_json = ec2_client.describe_security_groups(Filters=filters)
     security_groups_json = security_groups_json['SecurityGroups']
     security_groups = {x['GroupId']: {'GroupName': x['GroupName'],
                                       'Description': x['Description'],
