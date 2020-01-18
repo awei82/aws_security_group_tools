@@ -1,3 +1,6 @@
+# Script to enumerate all security groups and their rules, by VPC
+
+from __future__ import print_function
 import boto3
 import pandas as pd
 import argparse
@@ -12,6 +15,7 @@ def parse_args():
     parser.add_argument('-v', '--vpc_id', type=str, help='filter by vpc_id', default=None)
     return parser.parse_args()
 
+
 def get_tag_value(resource_json, key):
     if not resource_json.get('Tags'):
         return ''
@@ -23,23 +27,24 @@ def get_tag_value(resource_json, key):
     else:
         return value[0]
 
+
 def main():
     args = parse_args()
     PROFILE_NAME = args.profile_name
     VPC_ID = args.vpc_id
 
-    # set up AWS session + EC2 client
+    #### set up AWS session + EC2 client
     session = boto3.session.Session(profile_name=PROFILE_NAME)
     ec2_client = session.client('ec2')
     # ec2 = session.resource('ec2')
 
+    #### apply filter for vpc-id
     vpc_filter = {'Name': 'vpc-id', 'Values': [VPC_ID]}
-
-    # create security group graph
     filters = []
     if VPC_ID:
         filters.append(vpc_filter)
 
+    #### create security group graph
     security_groups_json = ec2_client.describe_security_groups(Filters=filters)
     security_groups_json = security_groups_json['SecurityGroups']
     security_groups = {x['GroupId']: {'GroupName': x['GroupName'],
@@ -64,7 +69,6 @@ def main():
     print(f'{len(df)} security group rules found')
     print('saving rules to inbound_rules.csv')
     df.to_csv('inbound_rules.csv')
-
 
     #### Create table of security groups + # of interfaces attached to each
     ni_json = ec2_client.describe_network_interfaces()
